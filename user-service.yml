@@ -1,0 +1,174 @@
+debug: true
+
+logging:
+    level:
+        org:
+            springframework: DEBUG
+
+server:
+    port: 9081
+    contextPath: /user-service
+
+# TEMPORARY!!!!
+# The idea is to have this enabled, so feign uses hystrix. However, this was causing the 
+# feign client call not to work because when you use hystrix with Feign a new thread is opened and so
+# you have no access to request and session scoped beans.
+# Currently there is a feign-hystrix module that allows to integrate both and then you can configure
+# hystrix so it access the request and session scoped beans:
+# See all this links:
+# My link with the original issue: https://github.com/spring-cloud/spring-cloud-security/issues/89
+# https://github.com/Netflix/feign/issues/214 ????
+# http://stackoverflow.com/questions/32482704/does-spring-cloud-feign-client-call-execute-inside-hystrix-command
+# http://cloud.spring.io/spring-cloud-netflix/spring-cloud-netflix.html
+# http://stackoverflow.com/questions/34510798/spring-cloud-netflix-passing-host-request-parameter-via-requestinterceptor-to
+feign:
+    hystrix:
+        enabled: false  
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+# The OAuth2 server definition that would be used to send the authorization requests to
+authserver:
+    hostname: localhost
+    port: 8899
+    contextPath: authserver
+    
+# Note that the "/user" endpoint needs to provide the principle of the logged in user (/me endpoint)
+security:
+  sessions: always
+  oauth2:
+    resource: 
+      userInfoUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/me
+      preferTokenInfo: false 
+    client:
+      accessTokenUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/token
+      userAuthorizationUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/authorize
+      client-id: client
+      clientSecret: secret
+      
+
+# When you pass tests in embedded databases (in-memory) - typical for testing - you need to enable this to avoid errors because different
+# tests might try to create the same tables working with embedded databases
+spring:
+    datasource:
+        continueOnError: true
+# Overwrite here properties with values specific for 'development' environment / profile, place this profile at the end of the profiles list in your application.properties
+    jpa:
+        hibernate:
+            ddl-auto: none
+
+appverse: 
+    frontfacade:
+        oauth2:
+            jwt:
+                jks:
+                    keystore: oauth-jwt-example-keystore.jks
+                    password: guessThis
+                    key: oauth-jwt-example
+            apiprotection:
+                enabled: true
+            # TODO: Necessary here???? See how to remove this
+            authserver:
+                baseUrl: http://localhost:8899/authserver
+            tokenEndpoint:
+                path: /oauth/token
+            authorizeEndpoint:
+                path: /oauth/authorize
+        rest:
+            api:
+                basepath: /api
+            exceptionHandler: 
+                enabled: false
+            schema:
+                enabled: true
+            http:
+                basic:
+                    default:
+                        setup:
+                            enabled: false
+            basicAuthenticationEndpoint:
+                enabled: false
+            simpleAuthenticationEndpoint:
+                enabled: false
+    # Enabled Request Dumper filter (Tomcat RequestDumperFilter - only works in Tomcat) for debug purposes
+            debug:
+                requestdumper:
+                    enabled: true
+        
+flyway:
+    locations: classpath:db/migration-common,classpath:db/migration-development
+# Flyway disabled for development
+# flyway.enabled=false
+
+# Enable this is you want the ddl to be generated in a file (this replaces former jpa-ddl-plugin). 
+#spring.jpa.properties.javax.persistence.schema-generation.scripts.action: drop-and-create
+#spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target: src/main/resources/db/jpa_generated.sql
+#spring.jpa.properties.javax.persistence.schema-generation.scripts.drop-target: src/main/resources/db/jpa_generated_drop.ddl
+
+#With Oauth2 we do not use sessions by default
+#security.sessions=STATELESS
+
+---
+spring:
+    profiles: swagger
+# If swagger is enabled (it should be enabled just for development) we need to exclude the oauth login endpoint 
+# to be canolicalized as it detects "mixed code" because it contains the URL to the swagger login form which in place contains the 
+# redirect_uri parameter. See APPS-129  
+appverse:
+    security:
+        xs:
+            xss:
+                filter:
+                    exclude: /oauth/authorize
+
+#Swagger properties (if not included, defaults will be applied) 
+#For patterns separate your endpoints with ',' using this format: /[yourendpoint].*,/[yourendpoint2].*
+#If you want all existing endpoints to be shown set pattern to "/.*" or simply comment the property
+#This property accepts a regular expression
+    frontfacade:
+        swagger:
+            # In this case as we are behind a Zuul proxy (MSA) we don't need to unprotect the swagger static files
+            # TODO: Modify appverse so it is not nessary to override this    
+            enabled: true
+            cloud: true
+            defaultGroupIncludePatterns: /api/*.*
+            title: Appverse OAuth Server showcase
+            description: Appverse OAuth Server showcase
+            termsOfServiceUrl: 
+            contact: Appverse Web Team
+            license:
+            licenseUrl:
+            oauth2:
+                support:
+                    enabled: false
+                clientId: swagger
+                scopes: api_access
+                # TODO: In cloud environment the oauth2 server needs to be looked up dynamically through the proxy, no hardcode..
+                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
+
+---
+# user-webservice instance when used on Docker
+spring:
+  profiles: docker
+eureka:
+# Register our microservices to Eureka using hostnames in a Docker environment will not work, they will all get 
+# one and the same hostname. Instead we configure them to use its IP address during registration with Eureka.
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.59.103:8761/eureka/
+      
+# The OAuth2 server definition that would be used to send the authorization requests to
+authserver:
+    hostname: 192.168.59.103
+    port: 8899
+    contextPath: authserver
+    
+# Define the port where the API gateway server would be running. This could always be port 8080
+# since each docker container has it's own IP
+server:
+  port: 8080
