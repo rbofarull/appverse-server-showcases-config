@@ -1,5 +1,6 @@
 server:
   contextPath: /car-service
+  port: 0
 
 eureka:
   client:
