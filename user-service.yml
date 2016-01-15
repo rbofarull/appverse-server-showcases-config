@@ -6,7 +6,6 @@ logging:
             springframework: DEBUG
 
 server:
-    port: 9081
     contextPath: /user-service
 
 # TEMPORARY!!!!
