@@ -24,7 +24,7 @@ server:
 feign:
     hystrix:
         enabled: true
-#hystrix.command.default.execution.isolation.strategy: SEMAPHORE    
+hystrix.command.default.execution.isolation.strategy: SEMAPHORE    
 
 eureka:
   client:
