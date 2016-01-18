@@ -23,7 +23,8 @@ server:
 # http://stackoverflow.com/questions/34510798/spring-cloud-netflix-passing-host-request-parameter-via-requestinterceptor-to
 feign:
     hystrix:
-        enabled: false  
+        enabled: true
+hystrix.command.default.execution.isolation.strategy: SEMAPHORE    
 
 eureka:
   client:
