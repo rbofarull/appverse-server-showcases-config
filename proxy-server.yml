@@ -95,6 +95,6 @@ eureka:
       
 # The OAuth2 server definition that would be used to send the authorization requests to
 authserver:
-    hostname: oauth
+    hostname: 192.168.99.100
     port: 8899
     contextPath: authserver
