@@ -1,6 +1,6 @@
 server:
-  contextPath: /car-service
-  port: 8084
+    contextPath: /car-service
+    port: 8084
 
 eureka:
   client:
