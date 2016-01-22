@@ -6,8 +6,8 @@ logging:
             springframework: DEBUG
 
 server:
-    contextPath: /user-service
-    port: 8085
+  contextPath: /user-service
+  port: 8085
 
 # TEMPORARY!!!!
 # The idea is to have this enabled, so feign uses hystrix. However, this was causing the 
@@ -99,8 +99,8 @@ appverse:
                 requestdumper:
                     enabled: true
         
-flyway:
-    locations: classpath:db/migration-common,classpath:db/migration-development
+#flyway:
+#    locations: classpath:db/migration-common,classpath:db/migration-development
 # Flyway disabled for development
 # flyway.enabled=false
 
