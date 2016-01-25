@@ -18,6 +18,8 @@ eureka:
 spring:
   profiles: docker
 eureka:
+  server:
+    enableSelfPreservation: false 
   instance:
     hostname: registry
   client:
