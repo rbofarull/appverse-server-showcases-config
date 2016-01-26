@@ -26,9 +26,6 @@ feign:
         enabled: true
 hystrix.command.default.execution.isolation.strategy: SEMAPHORE    
 
-
-eureka.instance.preferIpAddress=true 
-
 eureka:
   client:
     serviceUrl:
