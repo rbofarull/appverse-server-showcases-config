@@ -41,10 +41,11 @@ eureka:
       
       
 security:
-  ignored: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
-  sessions: ALWAYS
   oauth2:
     sso:
+      home:
+        secure: false
+        path: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
       loginPath: /login    
 # Define settings for Single-Sign-On with OAuth2; this means that we need to relay the OAuth token 
 # to the subsequent resources that are proxied by the Zuul api gateway.
