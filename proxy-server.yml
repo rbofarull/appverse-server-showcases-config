@@ -26,7 +26,7 @@ zuul:
         serviceId: user-service
         stripPrefix: false
     integration-portal: 
-        path: /integration-portal/**
+        path: /**
         serviceId: integration-portal
         stripPrefix: false  
     user: 
