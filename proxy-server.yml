@@ -24,8 +24,11 @@ zuul:
     user-service: 
         path: /user-service/**
         serviceId: user-service
+        stripPrefix: false
+    integration-portal: 
+        path: /**
+        serviceId: integration-portal
         stripPrefix: false  
-    integration-portal: /**
     user: 
       path: /api/loggedinuser/**
       stripPrefix: true
