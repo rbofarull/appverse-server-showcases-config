@@ -23,8 +23,8 @@ security:
     client:
       accessTokenUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/token
       userAuthorizationUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/authorize
-      clientId: test-oauth-server-showcase-authorization-code
-      secret: our-secret
+      client-id: client
+      clientSecret: secret
 
 appverse: 
   frontfacade:
@@ -33,8 +33,46 @@ appverse:
         jks:
           keystore: oauth-jwt-example-keystore.jks
           password: guessThis
-          key: oauth-jwt-example      
+          key: oauth-jwt-example   
       
+---
+spring:
+    profiles: swagger
+# If swagger is enabled (it should be enabled just for development) we need to exclude the oauth login endpoint 
+# to be canolicalized as it detects "mixed code" because it contains the URL to the swagger login form which in place contains the 
+# redirect_uri parameter. See APPS-129  
+appverse:
+    security:
+        xs:
+            xss:
+                filter:
+                    exclude: /oauth/authorize
+
+#Swagger properties (if not included, defaults will be applied) 
+#For patterns separate your endpoints with ',' using this format: /[yourendpoint].*,/[yourendpoint2].*
+#If you want all existing endpoints to be shown set pattern to "/.*" or simply comment the property
+#This property accepts a regular expression
+    frontfacade:
+        swagger:
+            # In this case as we are behind a Zuul proxy (MSA) we don't need to unprotect the swagger static files
+            # TODO: Modify appverse so it is not nessary to override this    
+            enabled: true
+            cloud: true
+            defaultGroupIncludePatterns: /api/*.*
+            title: Appverse OAuth Server showcase
+            description: Appverse OAuth Server showcase
+            termsOfServiceUrl: 
+            contact: Appverse Web Team
+            license:
+            licenseUrl:
+            oauth2:
+                support:
+                    enabled: false
+#                clientId: client
+#                scopes: secret
+                # TODO: In cloud environment the oauth2 server needs to be looked up dynamically through the proxy, no hardcode..
+#                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
+              
 ---
 # task-webservice instance when used on Docker
 spring:

@@ -145,10 +145,10 @@ appverse:
             oauth2:
                 support:
                     enabled: false
-                clientId: swagger
-                scopes: api_access
+#                clientId: client
+#                scopes: secret
                 # TODO: In cloud environment the oauth2 server needs to be looked up dynamically through the proxy, no hardcode..
-                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
+#                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
 
 ---
 # user-webservice instance when used on Docker
