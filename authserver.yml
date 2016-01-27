@@ -37,7 +37,8 @@ security:
 spring:
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:test;MODE=MySQL    
+    url: jdbc:h2:mem:test;MODE=MySQL
+
 ---
 
 spring:
@@ -47,6 +48,7 @@ eureka:
 # one and the same hostname. Instead we configure them to use its IP address during registration with Eureka.
   instance:
     preferIpAddress: true
+
   client:
     serviceUrl:
       defaultZone: http://registry:8761/eureka/         
