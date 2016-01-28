@@ -12,7 +12,7 @@ server:
   port: 8899
   contextPath: /authserver
   
-appverse: 
+appverse:
   frontfacade:
     oauth2:
       jwt:
