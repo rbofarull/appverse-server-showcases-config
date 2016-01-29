@@ -61,33 +61,32 @@ spring:
             ddl-auto: none
 
 appverse: 
-  frontfacade:
-    oauth2:
-      jwt:
-        jks:
+  frontfacade: 
+    oauth2: 
+      jwt: 
+        jks: 
+          key: oauth-jwt-example
           keystore: oauth-jwt-example-keystore.jks
           password: guessThis
-          key: oauth-jwt-example
-        rest:
-            api:
-                basepath: /api
-            exceptionHandler: 
-                enabled: false
-            schema:
-                enabled: false
-            http:
-                basic:
-                    default:
-                        setup:
-                            enabled: false
-            basicAuthenticationEndpoint:
-                enabled: false
-            simpleAuthenticationEndpoint:
-                enabled: false
-    # Enabled Request Dumper filter (Tomcat RequestDumperFilter - only works in Tomcat) for debug purposes
-            debug:
-                requestdumper:
-                    enabled: true      
+        rest: 
+          api: 
+            basepath: /api
+          basicAuthenticationEndpoint: 
+            enabled: false
+          debug: 
+            requestdumper: 
+              enabled: true
+          exceptionHandler: 
+            enabled: false
+          http: 
+            basic: 
+              default: 
+                setup: 
+                  enabled: false
+          schema: 
+            enabled: false
+          simpleAuthenticationEndpoint: 
+            enabled: false
         
 #flyway:
 #    locations: classpath:db/migration-common,classpath:db/migration-development
