@@ -39,7 +39,6 @@ authserver:
     
 # Note that the "/user" endpoint needs to provide the principle of the logged in user (/me endpoint)
 security:
-  sessions: always
   oauth2:
     resource: 
       userInfoUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/me
@@ -62,29 +61,20 @@ spring:
             ddl-auto: none
 
 appverse: 
-    frontfacade:
-        oauth2:
-            jwt:
-                jks:
-                    keystore: oauth-jwt-example-keystore.jks
-                    password: guessThis
-                    key: oauth-jwt-example
-            apiprotection:
-                enabled: true
-            # TODO: Necessary here???? See how to remove this
-            authserver:
-                baseUrl: http://localhost:8899/authserver
-            tokenEndpoint:
-                path: /oauth/token
-            authorizeEndpoint:
-                path: /oauth/authorize
+  frontfacade:
+    oauth2:
+      jwt:
+        jks:
+          keystore: oauth-jwt-example-keystore.jks
+          password: guessThis
+          key: oauth-jwt-example
         rest:
             api:
                 basepath: /api
             exceptionHandler: 
                 enabled: false
             schema:
-                enabled: true
+                enabled: false
             http:
                 basic:
                     default:
@@ -97,7 +87,7 @@ appverse:
     # Enabled Request Dumper filter (Tomcat RequestDumperFilter - only works in Tomcat) for debug purposes
             debug:
                 requestdumper:
-                    enabled: true
+                    enabled: true      
         
 #flyway:
 #    locations: classpath:db/migration-common,classpath:db/migration-development

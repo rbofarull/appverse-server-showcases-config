@@ -33,8 +33,27 @@ appverse:
         jks:
           keystore: oauth-jwt-example-keystore.jks
           password: guessThis
-          key: oauth-jwt-example   
-      
+          key: oauth-jwt-example
+        rest:
+            api:
+                basepath: /api
+            exceptionHandler: 
+                enabled: false
+            schema:
+                enabled: false
+            http:
+                basic:
+                    default:
+                        setup:
+                            enabled: false
+            basicAuthenticationEndpoint:
+                enabled: false
+            simpleAuthenticationEndpoint:
+                enabled: false
+    # Enabled Request Dumper filter (Tomcat RequestDumperFilter - only works in Tomcat) for debug purposes
+            debug:
+                requestdumper:
+                    enabled: true      
 ---
 spring:
     profiles: swagger
@@ -72,7 +91,6 @@ appverse:
 #                scopes: secret
                 # TODO: In cloud environment the oauth2 server needs to be looked up dynamically through the proxy, no hardcode..
 #                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
-              
 ---
 # task-webservice instance when used on Docker
 spring:
