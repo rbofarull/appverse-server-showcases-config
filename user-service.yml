@@ -71,22 +71,22 @@ appverse:
     rest: 
       api: 
         basepath: /api
+      http: 
+        basic: 
+          default: 
+            setup: 
+              enabled: false    
       basicAuthenticationEndpoint: 
         enabled: false
+      simpleAuthenticationEndpoint: 
+        enabled: false          
       debug: 
         requestdumper: 
           enabled: true
       exceptionHandler: 
         enabled: false
-      http: 
-        basic: 
-          default: 
-            setup: 
-              enabled: false
-        simpleAuthenticationEndpoint: 
-          enabled: false          
-        schema: 
-          enabled: false        
+      schema: 
+        enabled: false    
 ---
 spring:
     profiles: swagger
