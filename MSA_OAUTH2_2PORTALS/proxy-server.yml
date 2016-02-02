@@ -26,7 +26,7 @@ zuul:
         serviceId: user-service
         stripPrefix: false
     integration-portal: 
-        path: /**
+        path: /portal1/**
         serviceId: integration-portal
         stripPrefix: false
     portal2: 
@@ -45,7 +45,7 @@ eureka:
       
       
 security:
-  ignored: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
+# In this example we want to force authentication firs, so we comment:  ignored: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
   oauth2:
     sso:
 #      home:
