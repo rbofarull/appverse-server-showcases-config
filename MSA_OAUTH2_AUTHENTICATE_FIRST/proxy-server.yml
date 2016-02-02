@@ -41,7 +41,7 @@ eureka:
       
       
 security:
-  ignored: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
+#Commented as we want to authenticate first in any case  ignored: /,/favicon.ico,/index.html,/home.html,/dashboard.html,/js/**,/css/**,/webjars/**
   oauth2:
     sso:
 #      home:
