@@ -1,4 +1,5 @@
 server:
+  contextPath: /portal2
   port: 8080
 
 eureka:
