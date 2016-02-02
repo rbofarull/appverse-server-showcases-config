@@ -1,0 +1,115 @@
+server:
+    contextPath: /car-service
+    port: 8084
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+   
+      
+# The OAuth2 server definition that would be used to send the authorization requests to
+authserver:
+    hostname: localhost
+    port: 8899
+    contextPath: authserver
+
+# Note that the "/user" endpoint needs to provide the principle of the logged in user (/me endpoint)
+security:
+  oauth2:
+    resource: 
+      userInfoUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/me
+      preferTokenInfo: false 
+    client:
+      accessTokenUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/token
+      userAuthorizationUri: http://${authserver.hostname}:${authserver.port}/${authserver.contextPath}/oauth/authorize
+      client-id: client
+      clientSecret: secret
+
+appverse: 
+  frontfacade: 
+    oauth2: 
+      jwt: 
+        jks: 
+          key: oauth-jwt-example
+          keystore: oauth-jwt-example-keystore.jks
+          password: guessThis
+    rest: 
+      api: 
+        basepath: /api
+      http: 
+        basic: 
+          default: 
+            setup: 
+              enabled: false    
+      basicAuthenticationEndpoint: 
+        enabled: false
+      simpleAuthenticationEndpoint: 
+        enabled: false          
+      debug: 
+        requestdumper: 
+          enabled: true
+      exceptionHandler: 
+        enabled: false
+      schema: 
+        enabled: false    
+---
+spring:
+    profiles: swagger
+# If swagger is enabled (it should be enabled just for development) we need to exclude the oauth login endpoint 
+# to be canolicalized as it detects "mixed code" because it contains the URL to the swagger login form which in place contains the 
+# redirect_uri parameter. See APPS-129  
+appverse:
+    security:
+        xs:
+            xss:
+                filter:
+                    exclude: /oauth/authorize
+
+#Swagger properties (if not included, defaults will be applied) 
+#For patterns separate your endpoints with ',' using this format: /[yourendpoint].*,/[yourendpoint2].*
+#If you want all existing endpoints to be shown set pattern to "/.*" or simply comment the property
+#This property accepts a regular expression
+    frontfacade:
+        swagger:
+            # In this case as we are behind a Zuul proxy (MSA) we don't need to unprotect the swagger static files
+            # TODO: Modify appverse so it is not nessary to override this    
+            enabled: true
+            cloud: true
+            defaultGroupIncludePatterns: /api/*.*
+            title: Appverse OAuth Server showcase
+            description: Appverse OAuth Server showcase
+            termsOfServiceUrl: 
+            contact: Appverse Web Team
+            license:
+            licenseUrl:
+            oauth2:
+                support:
+                    enabled: false
+#                clientId: client
+#                scopes: secret
+                # TODO: In cloud environment the oauth2 server needs to be looked up dynamically through the proxy, no hardcode..
+#                loginEndpoint: http://localhost:8899/authserver/oauth/authorize
+---
+# task-webservice instance when used on Docker
+spring:
+  profiles: docker
+eureka:
+# Register our microservices to Eureka using hostnames in a Docker environment will not work, they will all get 
+# one and the same hostname. Instead we configure them to use its IP address during registration with Eureka.
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://registry:8761/eureka/
+      
+# The OAuth2 server definition that would be used to send the authorization requests to
+authserver:
+    hostname: oauth
+    port: 8899
+    contextPath: authserver
+    
+# Define the port where the API gateway server would be running. This could always be port 8080
+# since each docker container has it's own IP
+server:
+  port: 8080
